@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/header.ejs') %>
+<body>
+    <%- include('../partials/nav.ejs') %>
+
+    <main>
+        <h2>All Notes</h2>
+        <a href="/notes/create">+ New Note</a>
+
+        <% if (notes.length === 0) { %>
+            <p>No notes yet. <a href="/notes/create">Create one!</a></p>
+        <% } else { %>
+            <% notes.forEach(note => { %>
+                <div class="note-preview">
+                    <a href="/notes/<%= note._id %>">
+                        <h3><%= note.title %></h3>
+                    </a>
+                    <span class="category"><%= note.category %></span>
+                    <p><%= note.content.substring(0, 100) %><%= note.content.length > 100 ? '...' : '' %></p>
+                    <small>Created: <%= note.createdAt.toDateString() %></small>
+                </div>
+            <% }) %>
+        <% } %>
+    </main>
+
+    <%- include('../partials/footer.ejs') %>
+</body>
+</html>

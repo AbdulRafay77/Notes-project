@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/header.ejs') %>
+<body>
+    <%- include('../partials/nav.ejs') %>
+
+    <main>
+        <h2>Edit Note</h2>
+
+        <!-- POST to /notes/:id/edit as a PUT workaround -->
+        <form action="/notes/<%= note._id %>/edit" method="POST">
+            <label for="title">Title</label>
+            <input type="text" name="title" id="title" value="<%= note.title %>" required>
+
+            <label for="content">Content</label>
+            <textarea name="content" id="content" rows="6" required><%= note.content %></textarea>
+
+            <label for="category">Category</label>
+            <select name="category" id="category">
+                <option value="general"   <%= note.category === 'general'  ? 'selected' : '' %>>General</option>
+                <option value="personal"  <%= note.category === 'personal' ? 'selected' : '' %>>Personal</option>
+                <option value="work"      <%= note.category === 'work'     ? 'selected' : '' %>>Work</option>
+                <option value="study"     <%= note.category === 'study'    ? 'selected' : '' %>>Study</option>
+            </select>
+
+            <button type="submit">Update Note</button>
+        </form>
+
+        <a href="/notes/<%= note._id %>">← Cancel</a>
+    </main>
+
+    <%- include('../partials/footer.ejs') %>
+</body>
+</html>

@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-</head>
+<%- include('./partials/header.ejs') %>
 <body>
-    
+    <%- include('./partials/nav.ejs') %>
+
+    <main>
+        <h2>Welcome to myNotes</h2>
+        <p>Capture your thoughts, ideas, and reminders.</p>
+        <a href="/notes">View all notes</a> |
+        <a href="/notes/create">Create a new note</a>
+    </main>
+
+    <%- include('./partials/footer.ejs') %>
 </body>
 </html>

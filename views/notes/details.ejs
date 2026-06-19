@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/header.ejs') %>
+<body>
+    <%- include('../partials/nav.ejs') %>
+
+    <main>
+        <h2><%= note.title %></h2>
+        <span class="category"><%= note.category %></span>
+        <p><%= note.content %></p>
+        <small>Created: <%= note.createdAt.toDateString() %></small>
+
+        <div class="actions">
+            <a href="/notes/<%= note._id %>/edit">Edit</a>
+
+            <!-- Delete uses a POST form as a workaround (browsers don't support DELETE) -->
+            <form action="/notes/<%= note._id %>/delete" method="POST">
+                <button type="submit" onclick="return confirm('Delete this note?')">Delete</button>
+            </form>
+        </div>
+
+        <a href="/notes">← Back to all notes</a>
+    </main>
+
+    <%- include('../partials/footer.ejs') %>
+</body>
+</html>

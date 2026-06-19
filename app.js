@@ -1,41 +1,36 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const noteRoutes = require('./routes/noteRoutes');
 
 const app = express();
 
+// connect to MongoDB 
+const dbURI = 'mongodb://localhost:27017/notes-app';
+mongoose.connect(dbURI)
+    .then(() => {
+        console.log('Connected to MongoDB');
+        app.listen(3000, () => console.log('Server running on http://localhost:3000'));
+    })
+    .catch(err => console.log(err));
+
+// middleware
 app.set('view engine', 'ejs');
+app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
 
 // routes
-
-// home route
-app.get('/', (req, res) =>{
-    res.render('index', { title: 'Home Page', message: 'Welcome' });
+app.get('/', (req, res) => {
+    res.render('index', { title: 'Home' });
 });
 
-// about route
-app.get('/about', (req, res) =>{
-    res.render('about', { title: 'About Page'});
-
+app.get('/about', (req, res) => {
+    res.render('about', { title: 'About' });
 });
 
-// details route
-app.get('/notes', (req, res) =>{
-    res.render('index', { title: 'Notes Page'});
-});
+// all /notes routes handled by noteRoutes
+app.use('/notes', noteRoutes);
 
-// create route
-app.get('/create', (req, res) =>{
-    res.render('create', { title: 'Create Page'});
+// 404 fallback
+app.use((req, res) => {
+    res.status(404).render('404', { title: '404 Not Found' });
 });
-
-// edit
-app.get('/edit', (req, res) =>{
-    res.render('edit', { title: 'Edit Page'});
-});
-
-// 404 route
-app.use((req, res) =>{
-    res.status(404).render('404', { title: '404 Not found' });
-});
-
-app.listen(3000);
