@@ -5,7 +5,7 @@ const Note = require('./models/noteModel');
 const app = express();
 
 // connect to MongoDB 
-const dbURI = 'mongodb+srv://rafayNotes:Rafaycoc2002@cluster0.xdynlzy.mongodb.net/?appName=Cluster0'
+const dbURI = 'mongodb+srv://abdulrafaysiddiquib153_db_user:Rafaycoc2002@cluster0.fwab6im.mongodb.net/?appName=Cluster0'
 mongoose.connect(dbURI)
     .then(() => {
         console.log('Connected to MongoDB');
