@@ -1,6 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Note = require('./models/noteModel');
+const User = require('./models/User');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 const app = express();
 
@@ -16,9 +20,75 @@ mongoose.connect(dbURI)
 // -middleware------------------------
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // -routes----------------------------
+
+// JWT authentication routes
+
+// handle errors
+const handleErrors = (err) =>{
+    console.log(err.message, err.code);
+    let errors = { email: '', password:'' };
+
+    // duplicate error code
+    if (err.code === 11000) {
+        errors.email = 'that email is already registered';
+        return errors;
+    }
+
+    // validation errors
+    if (err.message.includes('user validation failed')) {
+        Object.values(err.errors).forEach(({ properties }) => {
+            errors[properties.path] = properties.message;
+        });
+    }
+
+    return errors;
+}
+const maxAge = 3 * 24 * 60 * 60
+const createToken = (id) => {
+    return jwt.sign({ id }, 'note secret', {
+        expiresIn: maxAge
+    });
+}
+
+app.get('/login', (req, res) => {
+    res.render('login', { title: 'Log in' });
+});
+
+app.get('/signup', (req, res) => {
+    res.render('signup', { title: 'Sign up' });
+});
+
+app.post('/signup', async (req, res) => {
+    const { email, password } = req.body;
+
+    try{
+        const user = await User.create({ email, password });
+        const token = createToken(user._id);
+        res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+        res.status(201).json({ user: user._id });
+    }
+    catch(err){
+        const errors = handleErrors(err);
+        res.status(400).json({ errors });
+    }
+});
+
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    
+    try{
+        const user = await User.login(email, password);
+        res.status(200).json({ user: user._id });
+    }
+    catch(err){
+        res.status(400).json({});
+    }
+});
 
 // home
 app.get('/', (req, res) => {
