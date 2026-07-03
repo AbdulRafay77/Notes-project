@@ -5,6 +5,7 @@ const User = require('./models/User');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { requireAuth, checkUser } = require('./middleware/authMiddleware');
 
 const app = express();
 
@@ -25,13 +26,23 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // -routes----------------------------
-
+app.use(checkUser);
 // JWT authentication routes
 
 // handle errors
 const handleErrors = (err) =>{
     console.log(err.message, err.code);
     let errors = { email: '', password:'' };
+
+    // incorrect email
+    if (err.message === 'incorrect email'){
+        errors.email = 'that email is not registered';
+    }
+
+    // incorrect password
+    if (err.message === 'incorrect password'){
+        errors.password = 'that password is incorrect';
+    }
 
     // duplicate error code
     if (err.code === 11000) {
@@ -83,11 +94,19 @@ app.post('/login', async (req, res) => {
     
     try{
         const user = await User.login(email, password);
+        const token = createToken(user._id);
+        res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
         res.status(200).json({ user: user._id });
     }
     catch(err){
-        res.status(400).json({});
+        const errors = handleErrors(err);
+        res.status(400).json({ errors });
     }
+});
+
+app.get('/logout', (req, res) => {
+    res.cookie('jwt', '', { maxAge: 1 });
+    res.redirect('/');
 });
 
 // home
@@ -100,19 +119,20 @@ app.get('/about', (req, res) => {
     res.render('about', { title: 'About' });
 });
 
-app.get('/notes/create', (req, res) => {
+// create note page
+app.get('/notes/create', requireAuth, (req, res) => {
     res.render('notes/create', { title: 'Create a Note' });
 });
 
 // list all notes - newest first
-app.get('/notes', (req, res) => {
+app.get('/notes', requireAuth, (req, res) => {
     Note.find().sort({ createdAt: -1 })
         .then(notes => res.render('notes/index', { title: 'All Notes', notes }))
         .catch(err => console.log(err));
 });
 
 // save new note
-app.post('/notes', (req,res) => {
+app.post('/notes', requireAuth, (req,res) => {
     const note = new Note(req.body);
     note.save()
         .then(() => res.redirect('/notes'))
