@@ -6,11 +6,12 @@ const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { requireAuth, checkUser } = require('./middleware/authMiddleware');
+require('dotenv').config();
 
 const app = express();
 
 // connect to MongoDB 
-const dbURI = 'mongodb+srv://abdulrafaysiddiquib153_db_user:Rafaycoc2002@cluster0.fwab6im.mongodb.net/?appName=Cluster0'
+const dbURI = process.env.MONGO_URI;
 mongoose.connect(dbURI)
     .then(() => {
         console.log('Connected to MongoDB');
@@ -61,7 +62,7 @@ const handleErrors = (err) =>{
 }
 const maxAge = 3 * 24 * 60 * 60
 const createToken = (id) => {
-    return jwt.sign({ id }, 'note secret', {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: maxAge
     });
 }
@@ -140,7 +141,7 @@ app.post('/notes', requireAuth, (req,res) => {
 });
 
 // show one note
-app.get('/notes/:id', (req, res) => {
+app.get('/notes/:id', requireAuth, (req, res) => {
     Note.findById(req.params.id)
         .then(note => {
             if (!note) return res.status(404).render('404', { title: '404 Not Found' });
@@ -150,7 +151,7 @@ app.get('/notes/:id', (req, res) => {
 });
 
 // show edit form
-app.get('/notes/:id/edit', (req, res) => {
+app.get('/notes/:id/edit', requireAuth, (req, res) => {
     Note.findById(req.params.id)
         .then(note => {
             if (!note) return res.status(404).render('404', { title: '404 Not Found' });
