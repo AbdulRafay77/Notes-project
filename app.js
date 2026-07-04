@@ -15,7 +15,7 @@ const dbURI = process.env.MONGO_URI;
 mongoose.connect(dbURI)
     .then(() => {
         console.log('Connected to MongoDB');
-        app.listen(3000, () => console.log('Server running on local host 3000'));
+        app.listen(process.env.PORT || 3000, () => console.log('Server running on local host 3000'));
     })
     .catch(err => console.log(err));
 
