@@ -161,14 +161,14 @@ app.get('/notes/:id/edit', requireAuth, (req, res) => {
 });
 
 // update note
-app.post('/notes/:id/edit', (req, res) => {
+app.post('/notes/:id/edit', requireAuth, (req, res) => {
     Note.findByIdAndUpdate(req.params.id, req.body)
         .then(() => res.redirect(`/notes/${req.params.id}`))
         .catch(err => console.log(err));
 });
 
 // delete note
-app.post('/notes/:id/delete', (req, res) => {
+app.post('/notes/:id/delete', requireAuth, (req, res) => {
     Note.findByIdAndDelete(req.params.id)
         .then(() => res.redirect('/notes'))
         .catch(err => console.log(err));
