@@ -726,3 +726,26 @@ button{
         animation: none !important;
     }
 }
+/* === AUTH PAGES === */
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 140px); /* subtracts nav + footer height */
+    padding: 2rem 1rem;
+}
+
+.auth-wrapper form {
+    width: 100%;
+    max-width: 400px;
+    margin: 0;
+    border-top: 4px solid var(--amber);
+}
+
+/* error messages */
+.error {
+    color: var(--danger);
+    font-size: 0.8rem;
+    margin-top: 4px;
+    min-height: 1rem;
+}
