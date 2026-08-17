@@ -80,6 +80,40 @@ main {
 }
 
 /* === NAV === */
+nav ul li a {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.4rem 0.85rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+    white-space: nowrap;   /* ADD THIS */
+}
+
+nav ul li a {
+    white-space: nowrap;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+    padding: 0.5rem 0;
+    flex-wrap: wrap;
+}
+
+.nav-welcome {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.875rem;
+    padding: 0.4rem 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 45vw;
+}
+
 nav {
     background: var(--ink);
     border-bottom: 3px solid var(--amber);
@@ -97,11 +131,14 @@ nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 2rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
 }
 
 .site-title {
-    padding: 1rem 0;
+    padding: 0.75rem 0;
+    flex-shrink: 0;
 }
 
 .site-title a {
@@ -136,6 +173,7 @@ nav ul {
     gap: 0.25rem;
     align-items: center;
     padding: 0.75rem 0;
+    flex-shrink: 0;
 }
 
 nav ul li a {
@@ -694,6 +732,10 @@ button{
         align-items: flex-start;
         gap: 0;
         padding-bottom: 0.5rem;
+    }
+
+    .nav-inner > * {
+        white-space: nowrap;
     }
 
     nav ul {
